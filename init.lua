@@ -75,7 +75,7 @@ function M.download_image(act)
         headers = headers
     })
 
-    tf_utils.delay(1000)
+    tf_utils.delay(500)
     lock = false
 
     return {
@@ -107,10 +107,6 @@ function M.get_detail(act)
             })
         end
     end
-
-    print(os.time())
-    tf_utils.delay(1000)
-    print('end is', os.time())
 
     return {
         title = json_ret.data.title,
