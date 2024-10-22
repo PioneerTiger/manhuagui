@@ -49,11 +49,10 @@ end
 
 function M.download_image(act)
     while lock do
-        tf_utils.delay(1000)
+        tf_utils.delay(300)
     end
 
     lock = true
-    print('will download image', os.time())
 
     local url = act.payload.url
     local path = act.payload.downloadPath
@@ -70,12 +69,19 @@ function M.download_image(act)
         ['user-agent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.129 Safari/537.36'
     }
 
+    local now = dart_os_ext.now()
 
     local response = http.download(url, path, {
         headers = headers
     })
 
-    tf_utils.delay(500)
+    local ms = dart_os_ext.get_duration_ms(now)
+    dart_utils.log('download image cost:' .. tostring(ms))
+    local delay_time = 500 - ms
+    if delay_time > 0 then
+        tf_utils.delay(delay_time)
+    end
+
     lock = false
 
     return {
