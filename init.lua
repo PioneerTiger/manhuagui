@@ -10,7 +10,7 @@ local lock = false
 function M.search(act)
     local query = {
         keyword = act.payload.keyword,
-        page = act.payload.page,
+        page = act.payload.page + 1,
         allow_cache=false
     }
 
@@ -27,6 +27,7 @@ function M.search(act)
     end
 
     local json_ret = dart_json.decode(ret.content)
+    dart_utils.log('search result:'.. debug.debug_table(json_ret))
 
     local rets = {}
 
@@ -40,8 +41,14 @@ function M.search(act)
         table.insert(rets, data)
     end
 
+    local nomore = false
+    if json_ret.data.page * json_ret.data.limit >= json_ret.data.total then
+        nomore = true
+    end
+
     return {
         success = true,
+        nomore = nomore,
         data = rets
     }
 end
